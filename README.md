@@ -29,16 +29,16 @@ go run main.go
 
 ## Project structure
 ```
-Codivy/
-├── .cli/
-│     └── .app/ 
-│          └── main.go       <- main app entry point
+Codivy/       
 ├── internal/
-│      └── github/
-│            └── requests/
-│                  └── request.go    <- GitHub request logic
-├── go.mod
-└── README.md
+│      ├── github/
+│      │     └── requests/
+│      │           └── request.go    <- GitHub request logic
+│      └── modules/ <- push settings
+├── templates/ <- Project Models
+├── main.go <- main app entry point
+├── go.mod 
+└── README.md <- you're here
 ```
 
 ## Contributions
