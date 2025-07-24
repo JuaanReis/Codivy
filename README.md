@@ -22,7 +22,7 @@
 2. Clone this repository
 ```bash
 git clone https://github.com/JuaanReis/Codevy.git
-go run .cli/app
+go run main.go
 ```
 3. Answer the questions
 4. To continue your project
