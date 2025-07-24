@@ -4,13 +4,16 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"repoMan/internal/github/requests"
+	"Codivy/internal/github/requests"
+	"Codivy/internal/modules"
 	"bufio"
 	"strings"
 	"encoding/json"
 )
 
 func main() {
+	var err error
+
 	reader := bufio.NewReader(os.Stdin)
 
 	fmt.Print("What will be the name of your repository?: ")
@@ -45,12 +48,26 @@ func main() {
     	fmt.Println("Token cannot be empty. Please enter a valid GitHub token.")
 	}
 
+	fmt.Print("Choose a language for the template (python/go/node): ")
+	lang, _ := reader.ReadString('\n')
+	lang = strings.TrimSpace(strings.ToLower(lang))
+
+	os.Mkdir(repoName, 0755)
+	templatePath := fmt.Sprintf("template/%s", lang)
+	err = modules.CopyDir(templatePath, repoName)
+
+	if err != nil {
+		log.Fatalf("Failed to copy template: %v", err)
+	}
+
+	fmt.Println("Template files copied to local folder!")
+
 	client := requests.NewClient(repoToken)
 
 	payload := map[string]any{
-		"name":        repoName,
-		"private":     isPriv,
-		"description": repoDesc,
+		"name":             repoName,
+		"private":          isPriv,
+		"description":      repoDesc,
 		"license_template": repoLicense,
 	}
 
@@ -61,6 +78,7 @@ func main() {
 
 	type RepoResponse struct {
 		HTMLURL string `json:"html_url"`
+		CloneURL string `json:"clone_url"`
 	}
 
 	var repoData RepoResponse
@@ -68,5 +86,10 @@ func main() {
 		fmt.Printf("\nRepository created successfully!\nURL: %s\n", repoData.HTMLURL)
 	} else {
 		fmt.Printf("[-] Created, but couldn't parse the response.\n")
+	}
+
+	err = modules.SetupRepo(repoData.CloneURL, repoName, lang)
+	if err != nil {
+		log.Fatalf("[-] Error when configuring the repository: %v", err)
 	}
 }

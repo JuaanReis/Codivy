@@ -4,7 +4,7 @@ import (
 	"io"
 	"fmt"
 	"net/http"
-	"repoMan/pkg"
+	"Codivy/pkg"
 )
 
 func (c *Client) Post(endpoint string, body any) (*http.Response, error) {
